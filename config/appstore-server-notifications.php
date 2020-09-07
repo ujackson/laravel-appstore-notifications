@@ -7,6 +7,7 @@ return [
      * https://developer.apple.com/documentation/storekit/in-app_purchase/enabling_server-to-server_notifications?language=objc#overview
      */
     'shared_secret' => env('APPLE_SHARED_SECRET'),
+    'bundle_id' => env('APPLE_BUNDLE_ID'),
     /*
      * All the events that should be handeled by your application.
      * Typically you should uncomment all jobs

@@ -14,7 +14,7 @@ class IntegrationTest extends TestCase
 
         Queue::fake();
 
-        Route::post('/apple/server/notifications', "\Appvise\AppStoreNotifications\WebhooksController");
+        Route::post('/webhook/apple/listen', "\Appvise\AppStoreNotifications\WebhooksController");
 
         config(
             [
@@ -22,6 +22,7 @@ class IntegrationTest extends TestCase
                     'initial_buy' => DummyJob::class,
                 ],
                 'appstore-server-notifications.shared_secret' => 'VALID_APPLE_PASSWORD',
+                'appstore-server-notifications.bundle_id' => 'com.example.app.ios',
             ]
         );
     }
@@ -30,11 +31,12 @@ class IntegrationTest extends TestCase
     public function it_can_handle_a_valid_request()
     {
         $this->withExceptionHandling();
-        $payload = include_once __DIR__.'/__fixtures__/request.php';
+        $payload = include_once __DIR__ . '/__fixtures__/request.php';
         $payload['password'] = 'VALID_APPLE_PASSWORD';
+        $payload['bid'] = 'com.example.app.ios';
 
         $this
-            ->postJson('/apple/server/notifications', $payload)
+            ->postJson('/webhook/apple/listen', $payload)
             ->assertSuccessful();
 
         $this->assertCount(1, AppleNotification::get());
@@ -50,12 +52,12 @@ class IntegrationTest extends TestCase
     /** @test */
     public function a_request_with_an_invalid_password_wont_be_logged()
     {
-        $payload = include_once __DIR__.'/__fixtures__/request.php';
+        $payload = include_once __DIR__ . '/__fixtures__/request.php';
         $payload['password'] = 'NON_VALID_APPLE_PASSWORD';
 
         $this
-            ->postJson('/apple/server/notifications', $payload)
-            ->assertStatus(400);
+            ->postJson('/webhook/apple/listen', $payload)
+            ->assertStatus(500);
 
         $this->assertCount(0, AppleNotification::get());
         $this->assertNull(AppleNotification::first());
@@ -69,7 +71,7 @@ class IntegrationTest extends TestCase
         $payload = ['payload' => 'INVALID'];
 
         $this
-            ->postJson('/apple/server/notifications', $payload)
+            ->postJson('/webhook/apple/listen', $payload)
             ->assertStatus(500);
 
         Queue::assertNotPushed(DummyJob::class);

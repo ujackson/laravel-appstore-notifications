@@ -10,17 +10,15 @@
         "laravel-appstore-server-notifications"
     ],
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Daan Geurts",
-            "email": "daan@app-vise.nl",
-            "homepage": "https://www.app-vise.nl",
-            "role": "Developer"
-        }
-    ],
+    "authors": [{
+        "name": "Daan Geurts",
+        "email": "daan@app-vise.nl",
+        "homepage": "https://www.app-vise.nl",
+        "role": "Developer"
+    }],
     "require": {
         "php": "^7.1",
-        "illuminate/support": "^5.5|^6.0",
+        "illuminate/support": "^5.5|^6.0|^7.0",
         "bensampo/laravel-enum": "^1.0"
     },
     "require-dev": {

@@ -10,10 +10,20 @@ use Appvise\AppStoreNotifications\Model\NotificationPayload;
 
 class WebhooksController
 {
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     * @throws WebhookFailed
+     */
     public function __invoke(Request $request)
     {
         $jobConfigKey = NotificationType::{$request->input('notification_type')}();
-        $this->determineValidRequest($request->input('password'));
+
+        try {
+            $this->determineValidRequest($request->input('password'), $request->input('bid'));
+        } catch (WebhookFailed $e) {
+            throw new \RuntimeException($e->getMessage());
+        }
 
         AppleNotification::storeNotification($jobConfigKey, $request->input());
 
@@ -31,9 +41,18 @@ class WebhooksController
         return response()->json();
     }
 
-    private function determineValidRequest(string $password): bool
+    /**
+     * @param string $password
+     * @param string $bundleId
+     * @return bool
+     * @throws WebhookFailed
+     */
+    private function determineValidRequest(string $password, string $bundleId): bool
     {
-        if ($password !== config('appstore-server-notifications.shared_secret')) {
+        if (
+            $password !== config('appstore-server-notifications.shared_secret') ||
+            $bundleId !== config('appstore-server-notifications.bundle_id')
+        ) {
             throw WebhookFailed::nonValidRequest();
         }
 
