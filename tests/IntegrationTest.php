@@ -14,7 +14,7 @@ class IntegrationTest extends TestCase
 
         Queue::fake();
 
-        Route::post('/webhook/apple/listen', "\Appvise\AppStoreNotifications\WebhooksController");
+        Route::post('/webhook/apple', "\Appvise\AppStoreNotifications\WebhooksController");
 
         config(
             [
@@ -36,7 +36,7 @@ class IntegrationTest extends TestCase
         $payload['bid'] = 'com.example.app.ios';
 
         $this
-            ->postJson('/webhook/apple/listen', $payload)
+            ->postJson('/webhook/apple', $payload)
             ->assertSuccessful();
 
         $this->assertCount(1, AppleNotification::get());
@@ -56,7 +56,7 @@ class IntegrationTest extends TestCase
         $payload['password'] = 'NON_VALID_APPLE_PASSWORD';
 
         $this
-            ->postJson('/webhook/apple/listen', $payload)
+            ->postJson('/webhook/apple', $payload)
             ->assertStatus(500);
 
         $this->assertCount(0, AppleNotification::get());
@@ -71,7 +71,7 @@ class IntegrationTest extends TestCase
         $payload = ['payload' => 'INVALID'];
 
         $this
-            ->postJson('/webhook/apple/listen', $payload)
+            ->postJson('/webhook/apple', $payload)
             ->assertStatus(500);
 
         Queue::assertNotPushed(DummyJob::class);

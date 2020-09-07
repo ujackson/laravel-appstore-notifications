@@ -1,3 +1,3 @@
 <?php
 
-Route::post('/webhook/apple/listen', "\Appvise\AppStoreNotifications\WebhooksController");
+Route::post('/webhook/apple', "\Appvise\AppStoreNotifications\WebhooksController");

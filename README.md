@@ -59,7 +59,7 @@ You should run migrate next to create the apple_notifications table:
 php artisan migrate
 ```
 
-This packages registers a POST route (/webhook/apple/listen) to the Webhookscontroller of this package
+This packages registers a POST route (/webhook/apple) to the Webhookscontroller of this package
 
 ## Usage
 When there is an change in one of the subscriptions Apple will send a POST request to a configured endpoint.
