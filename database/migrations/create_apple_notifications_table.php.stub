@@ -9,11 +9,11 @@ class CreateAppleNotificationsTable extends Migration
     {
         Schema::create('apple_notifications', function (Blueprint $table) {
             $table->bigIncrements('id');
-
             $table->string('type');
+            $table->string('original_transaction_id')->index()->nullable();
+            $table->string('environment')->nullable();
             $table->text('payload')->nullable();
             $table->text('exception')->nullable();
-
             $table->timestamps();
         });
     }
